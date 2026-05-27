@@ -6,7 +6,7 @@ services:
     container_name: steelbot_postgres
     restart: unless-stopped               # Redémarre automatiquement sauf si on l'arrête manuellement
     
-    env-file:
+    env_file:
       - .env                               # On charge les variables d'environnement depuis le fichier .env
     
     ports:
