@@ -4,4 +4,9 @@ version = "0.1.0"
 description = "AI Assistant for sales teams to manage orders and customer inquiries."
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "dotenv>=0.9.9",
+    "psycopg2-binary>=2.9.12",
+    "python-dotenv>=1.2.2",
+    "sqlalchemy>=2.0",
+]
