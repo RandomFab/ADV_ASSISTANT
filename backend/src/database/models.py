@@ -5,10 +5,10 @@ from sqlalchemy import (
     func
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from .connection import Base
+from src.database.connection import Base
 import enum
 
-# --- Enums Python → traduits en contraintes SQL par SQLAlchemy ---
+# --- Enums Python -> traduits en contraintes SQL par SQLAlchemy ---
 
 class SecteurEnum(str, enum.Enum):
     btp = "btp"
@@ -76,14 +76,14 @@ class Produit(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     reference: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
-    designation: Mapped[str] = mapped_column(String(200), nullable=False)  # ex: "Coil Acier S235 ép.2mm"
+    designation: Mapped[str] = mapped_column(String(200), nullable=False)  # ex: "Coil Acier S235 ep.2mm"
     famille: Mapped[FamilleEnum] = mapped_column(SAEnum(FamilleEnum), nullable=False)
     matiere: Mapped[MatiereEnum] = mapped_column(SAEnum(MatiereEnum), nullable=False)
     nuance: Mapped[str] = mapped_column(String(20))                # ex: S235, 304, 316L
     epaisseur_mm: Mapped[float] = mapped_column(Float, nullable=False)
     diametre_mm: Mapped[float | None] = mapped_column(Float, nullable=True)  # Uniquement pour les tubes
     prix_unitaire_eur: Mapped[float] = mapped_column(Float, nullable=False)
-    poids_kg_ml: Mapped[float] = mapped_column(Float)             # kg par mètre linéaire
+    poids_kg_ml: Mapped[float] = mapped_column(Float)             # kg par metre lineaire
     stock_disponible: Mapped[int] = mapped_column(Integer, default=0)
     stock_reserve: Mapped[int] = mapped_column(Integer, default=0)
     delai_fabrication_jours: Mapped[int] = mapped_column(Integer, default=5)
