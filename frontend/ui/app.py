@@ -2,6 +2,7 @@
 import streamlit as st
 import requests
 import json
+import os
 from datetime import datetime
 
 # ─────────────────────────────────────────
@@ -14,7 +15,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-API_URL = "http://127.0.0.1:8001"
+API_URL = os.getenv("API_URL", "http://127.0.0.1:8001")
 
 # ─────────────────────────────────────────
 # CSS — Style sobre et professionnel
@@ -140,7 +141,7 @@ def call_chat(question: str) -> dict:
     except requests.exceptions.Timeout:
         return {"ok": False, "error": "L'agent a mis trop de temps à répondre (timeout 60s)."}
     except requests.exceptions.ConnectionError:
-        return {"ok": False, "error": "Impossible de joindre l'API. Est-elle démarrée sur le port 8001 ?"}
+        return {"ok": False, "error": f"Impossible de joindre l'API ({API_URL}). Est-elle démarrée ?"}
     except Exception as e:
         return {"ok": False, "error": str(e)}
 
