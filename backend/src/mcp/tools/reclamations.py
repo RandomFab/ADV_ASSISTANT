@@ -58,7 +58,7 @@ def search_reclamations(client_name: str, statut: Optional[StatutReclamationEnum
                 "type": rec.type.value,
                 "statut": rec.statut.value,
                 "priorite": rec.priorite.value,
-                "date_creation": rec.date_creation.isoformat(),
+                "date_ouverture": rec.date_ouverture.isoformat(),
                 "date_cloture": rec.date_cloture.isoformat() if rec.date_cloture else None,
                 "commande_numero": cmd.numero_commande
             })
