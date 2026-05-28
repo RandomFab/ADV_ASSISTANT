@@ -54,4 +54,5 @@ async def test_delivery_estimate(input_order_id: str):
         result = await client.call_tool("get_delivery_estimate", params)
         print(result)
 
-asyncio.run(test_delivery_estimate(input_order_id="CMD-2024-0078"))
+for cmd_id in ["CMD-2024-0078", "CMD-2024-0079", "CMD-2023-0081", "CMD-2024-0114"]:
+    asyncio.run(test_delivery_estimate(cmd_id))
