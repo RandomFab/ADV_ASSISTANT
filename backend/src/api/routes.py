@@ -8,6 +8,8 @@ from fastapi import APIRouter, HTTPException
 from src.api.schemas import ChatRequest, ChatResponse
 from src.config.paths import INTERACTIONS_LOG
 from langchain_core.messages import HumanMessage, AIMessage, ToolMessage
+from src.monitoring.alerting import run_monitoring_check
+from src.monitoring.evidently_reports import generate_report
 
 
 logger = logging.getLogger("steelbot")
@@ -83,3 +85,26 @@ async def health():
         "agent": "ready" if agent else "not initialized",
         "mcp_server": "http://127.0.0.1:8000/sse"
     }
+
+# À ajouter dans backend/src/api/routes.py
+
+@router.get("/monitoring/check")
+async def monitoring_check():
+    """
+    Lance un check complet de monitoring :
+    - Calcule les métriques sur les 100 dernières interactions
+    - Vérifie les seuils et crée des GitHub Issues si nécessaire
+    - Retourne le résumé du check
+    """
+    result = run_monitoring_check(last_n=100)
+    return result
+
+
+@router.get("/monitoring/report")
+async def monitoring_report():
+    """Génère un rapport Evidently HTML et retourne le chemin du fichier."""
+    try:
+        path = generate_report(last_n=200)
+        return {"status": "ok", "report_path": path}
+    except ValueError as e:
+        return {"status": "error", "message": str(e)}
