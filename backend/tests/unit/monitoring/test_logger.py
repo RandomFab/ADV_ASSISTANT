@@ -1,9 +1,7 @@
 # backend/tests/unit/monitoring/test_logger.py
 
 import pytest
-import json
-from pathlib import Path
-from datetime import datetime, timedelta
+from datetime import datetime
 from src.monitoring.logger import load_interactions, compute_metrics
 
 

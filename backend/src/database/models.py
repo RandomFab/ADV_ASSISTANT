@@ -1,8 +1,6 @@
-from datetime import datetime, timezone
+from datetime import datetime
 from sqlalchemy import (
-    String, Integer, Float, DateTime, Date,
-    ForeignKey, Text, Enum as SAEnum, Boolean,
-    func
+    String, Integer, Float, DateTime, ForeignKey, Text, Enum as SAEnum, func
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from src.database.connection import Base

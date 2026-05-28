@@ -1,7 +1,5 @@
 # backend/tests/functional/test_api_health.py
 
-import pytest
-import os
 from src.api.routes import agent_state
 
 

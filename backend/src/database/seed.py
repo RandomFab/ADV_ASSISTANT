@@ -101,8 +101,8 @@ def generate_produits() -> list[Produit]:
 
 def generate_commandes(clients: list[Client], produits: list[Produit], n: int = 600) -> list[Commande]:
     commandes = []
-    start_date = datetime(2023, 1, 1)
-    end_date = datetime(2025, 1, 1)
+    # start_date = datetime(2023, 1, 1)
+    # end_date = datetime(2025, 1, 1)
 
     for i in range(n):
         # Saisonnalité

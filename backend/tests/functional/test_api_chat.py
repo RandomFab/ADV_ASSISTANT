@@ -1,8 +1,6 @@
 # backend/tests/functional/test_api_chat.py
 
-import pytest
 import json
-from unittest.mock import AsyncMock
 from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 from src.api.routes import agent_state
 

@@ -7,8 +7,7 @@ Calcule les métriques qui seront vérifiées contre les seuils d'alerte.
 """
 
 import json
-from pathlib import Path
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from collections import Counter
 from src.config.paths import INTERACTIONS_LOG
 
@@ -84,8 +83,8 @@ def compute_metrics(interactions: list[dict]) -> dict:
 
     # ── Longueur des réponses ────────────────────────────────────────────
     longueurs = [i.get("answer_length", 0) for i in interactions]
-    nb_reponses_courtes = sum(1 for l in longueurs if l < 100)   # Probablement tronquée
-    nb_reponses_longues = sum(1 for l in longueurs if l > 5000)  # Verbosité excessive
+    nb_reponses_courtes = sum(1 for longueur in longueurs if longueur < 100)   # Probablement tronquée
+    nb_reponses_longues = sum(1 for longueur in longueurs if longueur > 5000)  # Verbosité excessive
 
     return {
         "nb_interactions": nb_total,

@@ -1,9 +1,7 @@
 # backend/src/ui/app.py
 import streamlit as st
 import requests
-import json
 import os
-from datetime import datetime
 
 # ─────────────────────────────────────────
 # Configuration de la page

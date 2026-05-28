@@ -1,6 +1,5 @@
 # backend/tests/functional/test_database_models.py
 
-import pytest
 from datetime import datetime, timedelta
 from src.database.models import (
     Client, Produit, Commande, LigneCommande, Reclamation,

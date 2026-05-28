@@ -1,6 +1,5 @@
 # backend/tests/unit/mcp/test_clients.py
 
-import pytest
 from src.mcp.tools.clients import get_client_info
 
 

@@ -8,7 +8,7 @@ Calcule le stock net (disponible - réservé) et indique le délai de fabricatio
 
 from src.mcp.mcp_instance import mcp
 from src.database.connection import SessionLocal
-from src.database.models import Produit, LigneCommande
+from src.database.models import Produit
 
 @mcp.tool()
 def get_stock_level(reference: str = None, mot_cle: str = None) -> dict:
@@ -35,7 +35,7 @@ def get_stock_level(reference: str = None, mot_cle: str = None) -> dict:
         if not produit:
             return {
                 "found": False,
-                "message": f"Produit non trouvé."
+                "message": "Produit non trouvé."
             }
         
         stock_net = produit.stock_disponible - produit.stock_reserve

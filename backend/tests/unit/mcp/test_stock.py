@@ -1,6 +1,5 @@
 # backend/tests/unit/mcp/test_stock.py
 
-import pytest
 from src.mcp.tools.stock import get_stock_level
 
 

@@ -1,6 +1,5 @@
 # backend/tests/unit/mcp/test_delivery.py
 
-import pytest
 from datetime import date, timedelta
 from src.mcp.tools.delivery import get_delivery_estimate
 from src.database.models import Commande, StatutCommandeEnum

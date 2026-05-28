@@ -1,6 +1,5 @@
 # backend/tests/unit/mcp/test_orders.py
 
-import pytest
 from src.mcp.tools.orders import get_order_status
 
 

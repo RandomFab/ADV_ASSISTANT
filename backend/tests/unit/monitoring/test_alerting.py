@@ -1,8 +1,7 @@
 # backend/tests/unit/monitoring/test_alerting.py
 
-import pytest
-from unittest.mock import Mock, patch
-from datetime import datetime, timezone, timedelta
+from unittest.mock import Mock
+from datetime import datetime, timezone
 from src.monitoring.alerting import (
     run_monitoring_check, _create_github_issue, _build_issue_body
 )

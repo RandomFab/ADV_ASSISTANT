@@ -1,7 +1,6 @@
 # backend/tests/functional/test_agent_graph.py
 
 import pytest
-import os
 from unittest.mock import patch, AsyncMock, MagicMock
 
 

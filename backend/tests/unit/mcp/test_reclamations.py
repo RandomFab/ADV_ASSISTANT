@@ -1,6 +1,5 @@
 # backend/tests/unit/mcp/test_reclamations.py
 
-import pytest
 from datetime import datetime, timedelta
 from src.mcp.tools.reclamations import search_reclamations
 from src.database.models import (

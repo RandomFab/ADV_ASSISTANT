@@ -1,7 +1,5 @@
 # backend/tests/functional/test_api_monitoring.py
 
-import pytest
-from unittest.mock import Mock, patch
 
 
 class TestMonitoringCheckEndpoint:

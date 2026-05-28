@@ -10,7 +10,7 @@ from typing import Optional
 
 from src.mcp.mcp_instance import mcp
 from src.database.connection import SessionLocal
-from src.database.models import Client, Reclamation, Commande
+from src.database.models import Client, Commande
 from src.database.models import StatutReclamationEnum
 from sqlalchemy.orm import joinedload
 

@@ -8,7 +8,7 @@ Supporte une recherche floue sur le nom (ILIKE PostgreSQL).
 
 from src.mcp.mcp_instance import mcp
 from src.database.connection import SessionLocal
-from src.database.models import Client, Commande, Reclamation
+from src.database.models import Client, Commande
 
 from sqlalchemy.orm import joinedload
 

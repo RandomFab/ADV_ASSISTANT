@@ -12,11 +12,6 @@ FastMCP basculera sur SSE/HTTP.
 
 from src.mcp.mcp_instance import mcp
 
-import src.mcp.tools.orders
-import src.mcp.tools.reclamations
-import src.mcp.tools.clients
-import src.mcp.tools.stock
-import src.mcp.tools.delivery
 
 if __name__ == "__main__":
     mcp.run(transport="sse", host="0.0.0.0", port=8000)

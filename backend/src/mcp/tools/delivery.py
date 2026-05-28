@@ -46,7 +46,7 @@ def get_delivery_estimate(order_id: str) -> dict:
             from datetime import datetime as _datetime
             date_commande = commande.date_commande.date() if isinstance(commande.date_commande, _datetime) else commande.date_commande
             date_fin = date_commande + timedelta(days=delai_max + 5)
-            jours_restants = (date_fin - date.today()).days
+            # jours_restants = (date_fin - date.today()).days
             estimation = f"Livraison estimée le {date_fin.isoformat()}"
         elif commande.statut.value == "expediee":
             estimation = f"Date prévue de livraison : {commande.date_livraison_prevue.isoformat()}"

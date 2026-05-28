@@ -2,12 +2,10 @@
 
 import pytest
 import json
-import os
 from datetime import datetime, timedelta
-from pathlib import Path
-from unittest.mock import Mock, AsyncMock, patch
+from unittest.mock import Mock, AsyncMock
 from sqlalchemy import create_engine
-from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.orm import sessionmaker
 from fastapi.testclient import TestClient
 
 from src.database.connection import Base
@@ -142,7 +140,6 @@ def db_with_seed(db_session):
 @pytest.fixture
 def mock_session_local(db_session, monkeypatch):
     """Monkeypatch SessionLocal to return our test session."""
-    from src.database.connection import SessionLocal as original_sessionlocal
 
     def mock_sessionlocal():
         return db_session
