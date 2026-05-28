@@ -1,6 +1,7 @@
 # backend/src/api/routes.py
 
 import json
+import os
 import time
 import uuid
 import logging
@@ -83,7 +84,7 @@ async def health():
     return {
         "status": "ok",
         "agent": "ready" if agent else "not initialized",
-        "mcp_server": "http://127.0.0.1:8000/sse"
+        "mcp_server": os.getenv("MCP_URL", "http://127.0.0.1:8001") + "/sse"
     }
 
 # À ajouter dans backend/src/api/routes.py
