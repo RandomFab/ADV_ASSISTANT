@@ -37,8 +37,8 @@ def generate_report(last_n: int = 200) -> str:
     """
     interactions = load_interactions(last_n=last_n)
 
-    if len(interactions) < 5:
-        raise ValueError(f"Pas assez d'interactions pour un rapport ({len(interactions)} < 5).")
+    if len(interactions) < 1:
+        raise ValueError(f"Pas assez d'interactions pour un rapport ({len(interactions)} < 1).")
 
     df = _interactions_to_dataframe(interactions)
 

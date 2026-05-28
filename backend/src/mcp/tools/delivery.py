@@ -43,7 +43,9 @@ def get_delivery_estimate(order_id: str) -> dict:
         if commande.statut.value in ["en_attente", "en_production"]:
             # Calcul basé sur le délai de fabrication le plus long + 5 jours de transport
             delai_max = max(ligne.produit.delai_fabrication_jours for ligne in commande.lignes)
-            date_fin = (commande.date_commande + timedelta(days=delai_max + 5)).date()
+            from datetime import datetime as _datetime
+            date_commande = commande.date_commande.date() if isinstance(commande.date_commande, _datetime) else commande.date_commande
+            date_fin = date_commande + timedelta(days=delai_max + 5)
             jours_restants = (date_fin - date.today()).days
             estimation = f"Livraison estimée le {date_fin.isoformat()}"
         elif commande.statut.value == "expediee":

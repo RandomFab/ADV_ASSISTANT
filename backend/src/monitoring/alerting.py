@@ -19,16 +19,13 @@ SEUILS = {
     "taux_sans_outil_pct": 20.0,    # > 20% → agent qui hallucine
 }
 
-# ── Config GitHub ─────────────────────────────────────────────────────────────
-GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
-GITHUB_REPO = os.getenv("GITHUB_REPO")
-
-
 def _create_github_issue(title: str, body: str) -> dict:
     """
     Crée une Issue GitHub via l'API REST.
     Nécessite GITHUB_TOKEN et GITHUB_REPO dans les variables d'environnement.
     """
+    GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+    GITHUB_REPO = os.getenv("GITHUB_REPO")
     if not GITHUB_TOKEN or not GITHUB_REPO:
         return {
             "created": False,
@@ -102,7 +99,7 @@ def run_monitoring_check(last_n: int = 100) -> dict:
     metrics = compute_metrics(interactions)
     
     if metrics.get("nb_interactions", 0) == 0:
-        return {"status": "ok", "message": "Aucune interaction à analyser.", "alertes": []}
+        return {"status": "ok", "nb_interactions_analysees": 0, "message": "Aucune interaction à analyser.", "alertes": []}
 
     alertes_declenchees = []
 

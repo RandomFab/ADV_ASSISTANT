@@ -7,7 +7,7 @@ import uuid
 import logging
 from fastapi import APIRouter, HTTPException
 from src.api.schemas import ChatRequest, ChatResponse
-from src.config.paths import INTERACTIONS_LOG
+import src.config.paths as _config_paths
 from langchain_core.messages import HumanMessage, AIMessage, ToolMessage
 from src.monitoring.alerting import run_monitoring_check
 from src.monitoring.evidently_reports import generate_report
@@ -45,11 +45,10 @@ async def chat(request: ChatRequest):
         "Pas de réponse"
     )
 
-    # Extraction des outils appelés (messages ToolMessage)
+    # Extraction des outils appelés (messages ToolMessage uniquement)
     tools_called = [
         m.name for m in messages
-        if hasattr(m, "name") and m.name is not None
-        and not isinstance(m, AIMessage)
+        if isinstance(m, ToolMessage) and m.name is not None
     ]
 
     latency_ms = round((time.time() - start_time) * 1000)
@@ -66,7 +65,7 @@ async def chat(request: ChatRequest):
     logger.info(json.dumps(log_entry, ensure_ascii=False))
 
     # Sauvegarde dans le fichier d'interactions pour analyse ultérieure
-    with open(INTERACTIONS_LOG, "a", encoding="utf-8") as f:
+    with open(_config_paths.INTERACTIONS_LOG, "a", encoding="utf-8") as f:
         f.write(json.dumps(log_entry, ensure_ascii=False) + "\n")
 
     return ChatResponse(

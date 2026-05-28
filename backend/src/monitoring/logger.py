@@ -36,10 +36,10 @@ def load_interactions(last_n: int = None, since_hours: int = None) -> list[dict]
 
     # Filtre temporel
     if since_hours:
-        cutoff = datetime.now(timezone.utc) - timedelta(hours=since_hours)
+        cutoff = datetime.utcnow() - timedelta(hours=since_hours)
         interactions = [
             i for i in interactions
-            if datetime.fromisoformat(i.get("timestamp", "2000-01-01T00:00:00+00:00")) >= cutoff
+            if datetime.fromisoformat(i.get("timestamp", "2000-01-01T00:00:00")).replace(tzinfo=None) >= cutoff
         ]
 
     # Filtre sur les N dernières
@@ -84,7 +84,7 @@ def compute_metrics(interactions: list[dict]) -> dict:
 
     # ── Longueur des réponses ────────────────────────────────────────────
     longueurs = [i.get("answer_length", 0) for i in interactions]
-    nb_reponses_courtes = sum(1 for l in longueurs if l < 20)    # Probablement tronquée
+    nb_reponses_courtes = sum(1 for l in longueurs if l < 100)   # Probablement tronquée
     nb_reponses_longues = sum(1 for l in longueurs if l > 5000)  # Verbosité excessive
 
     return {
