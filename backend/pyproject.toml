@@ -16,7 +16,15 @@ dependencies = [
     "mistralai>=2.4.7",
     "pandas>=3.0.3",
     "psycopg2-binary>=2.9.12",
+    "pytest>=9.0.3",
+    "pytest-asyncio>=0.24.0",
+    "pytest-cov>=6.0.0",
     "python-dotenv>=1.2.2",
     "sqlalchemy>=2.0",
     "uvicorn>=0.48.0",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.15.15",
 ]

@@ -10,15 +10,18 @@ from typing import Optional
 
 from src.mcp.mcp_instance import mcp
 from src.database.connection import SessionLocal
-from src.database.models import Client, Reclamation, Commande
+from src.database.models import Client, Commande
 from src.database.models import StatutReclamationEnum
 from sqlalchemy.orm import joinedload
 
+
 @mcp.tool()
-def search_reclamations(client_name: str, statut: Optional[StatutReclamationEnum] = None) -> dict:
+def search_reclamations(
+    client_name: str, statut: Optional[StatutReclamationEnum] = None
+) -> dict:
     """
     Récupère les réclamations d'un client par son nom (recherche floue) et statut.
-    
+
     Args:
         client_name: Nom du client (ex: "Acme Corp")
         statut: Filtre sur le statut de la réclamation (ouverte / en_cours / cloturee)
@@ -37,35 +40,42 @@ def search_reclamations(client_name: str, statut: Optional[StatutReclamationEnum
         )
 
         if not client:
-            return {
-                "found": False,
-                "message": f"Client '{client_name}' non trouvé."
-            }
-        
+            return {"found": False, "message": f"Client '{client_name}' non trouvé."}
+
         reclamations = []
-        toutes_reclamations = [rec for cmd in client.commandes for rec in cmd.reclamations]
+        toutes_reclamations = [
+            rec for cmd in client.commandes for rec in cmd.reclamations
+        ]
         nb_reclamations_total = len(toutes_reclamations)
 
         # Applique le filtre statut uniquement pour l'affichage
         if statut:
-            toutes_reclamations = [r for r in toutes_reclamations if r.statut.value == statut]
+            toutes_reclamations = [
+                r for r in toutes_reclamations if r.statut.value == statut
+            ]
 
         for rec in toutes_reclamations:
             # trouve la commande associée
             cmd = next(cmd for cmd in client.commandes if rec in cmd.reclamations)
-            reclamations.append({
-                "numero_ticket": rec.numero_ticket,
-                "type": rec.type.value,
-                "statut": rec.statut.value,
-                "priorite": rec.priorite.value,
-                "date_ouverture": rec.date_ouverture.isoformat(),
-                "date_cloture": rec.date_cloture.isoformat() if rec.date_cloture else None,
-                "commande_numero": cmd.numero_commande
-            })
-        
+            reclamations.append(
+                {
+                    "numero_ticket": rec.numero_ticket,
+                    "type": rec.type.value,
+                    "statut": rec.statut.value,
+                    "priorite": rec.priorite.value,
+                    "date_ouverture": rec.date_ouverture.isoformat(),
+                    "date_cloture": rec.date_cloture.isoformat()
+                    if rec.date_cloture
+                    else None,
+                    "commande_numero": cmd.numero_commande,
+                }
+            )
+
         nb_commandes = len(client.commandes)
-        taux_reclamation = (nb_reclamations_total / nb_commandes) * 100 if nb_commandes > 0 else 0
-        
+        taux_reclamation = (
+            (nb_reclamations_total / nb_commandes) * 100 if nb_commandes > 0 else 0
+        )
+
         return {
             "found": True,
             "client": client.nom_entreprise,
@@ -73,8 +83,8 @@ def search_reclamations(client_name: str, statut: Optional[StatutReclamationEnum
             "statistiques": {
                 "nb_reclamations_total": nb_reclamations_total,
                 "nb_commandes": nb_commandes,
-                "taux_reclamation": taux_reclamation
-            }
+                "taux_reclamation": taux_reclamation,
+            },
         }
     finally:
         db.close()

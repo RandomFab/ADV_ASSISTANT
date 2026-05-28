@@ -1,12 +1,13 @@
 # backend/src/api/routes.py
 
 import json
+import os
 import time
 import uuid
 import logging
 from fastapi import APIRouter, HTTPException
 from src.api.schemas import ChatRequest, ChatResponse
-from src.config.paths import INTERACTIONS_LOG
+import src.config.paths as _config_paths
 from langchain_core.messages import HumanMessage, AIMessage, ToolMessage
 from src.monitoring.alerting import run_monitoring_check
 from src.monitoring.evidently_reports import generate_report
@@ -20,6 +21,7 @@ router = APIRouter()
 agent_state = {}
 
 # --- Endpoints ---
+
 
 @router.post("/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest):
@@ -41,14 +43,12 @@ async def chat(request: ChatRequest):
     messages = result["messages"]
     final_answer = next(
         (m.content for m in reversed(messages) if isinstance(m, AIMessage)),
-        "Pas de réponse"
+        "Pas de réponse",
     )
 
-    # Extraction des outils appelés (messages ToolMessage)
+    # Extraction des outils appelés (messages ToolMessage uniquement)
     tools_called = [
-        m.name for m in messages
-        if hasattr(m, "name") and m.name is not None
-        and not isinstance(m, AIMessage)
+        m.name for m in messages if isinstance(m, ToolMessage) and m.name is not None
     ]
 
     latency_ms = round((time.time() - start_time) * 1000)
@@ -60,12 +60,12 @@ async def chat(request: ChatRequest):
         "tools_called": tools_called,
         "answer_length": len(final_answer),
         "latency_ms": latency_ms,
-        "status": "success"
+        "status": "success",
     }
     logger.info(json.dumps(log_entry, ensure_ascii=False))
 
     # Sauvegarde dans le fichier d'interactions pour analyse ultérieure
-    with open(INTERACTIONS_LOG, "a", encoding="utf-8") as f:
+    with open(_config_paths.INTERACTIONS_LOG, "a", encoding="utf-8") as f:
         f.write(json.dumps(log_entry, ensure_ascii=False) + "\n")
 
     return ChatResponse(
@@ -73,7 +73,7 @@ async def chat(request: ChatRequest):
         question=request.question,
         answer=final_answer,
         tools_called=tools_called,
-        latency_ms=latency_ms
+        latency_ms=latency_ms,
     )
 
 
@@ -83,10 +83,12 @@ async def health():
     return {
         "status": "ok",
         "agent": "ready" if agent else "not initialized",
-        "mcp_server": "http://127.0.0.1:8000/sse"
+        "mcp_server": os.getenv("MCP_URL", "http://127.0.0.1:8000") + "/sse",
     }
 
+
 # À ajouter dans backend/src/api/routes.py
+
 
 @router.get("/monitoring/check")
 async def monitoring_check():

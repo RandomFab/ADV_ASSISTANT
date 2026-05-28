@@ -16,14 +16,17 @@ async def create_agent():
 
     # 1. Le modèle Mistral
     llm = ChatMistralAI(
-        model="mistral-small-latest", api_key=os.getenv("MISTRAL_API_KEY"), temperature=0
+        model="mistral-small-latest",
+        api_key=os.getenv("MISTRAL_API_KEY"),
+        temperature=0,
     )
 
     # 2. Connexion au serveur MCP
+    mcp_url = os.getenv("MCP_URL", "http://127.0.0.1:8001") + "/sse"
     mcp_client = MultiServerMCPClient(
         {
             "steelbot": {
-                "url": "http://127.0.0.1:8000/sse",
+                "url": mcp_url,
                 "transport": "sse",
             }
         }
