@@ -1,0 +1,44 @@
+# Dockerfile pour le backend (FastAPI + MCP Server)
+# Multistage build pour optimiser la taille des images
+
+FROM python:3.13-slim as base
+
+WORKDIR /app
+
+# Installer les dépendances système nécessaires
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    postgresql-client \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copier les fichiers de dépendances
+COPY pyproject.toml uv.lock ./
+
+# Installer uv et les dépendances Python
+RUN pip install --no-cache-dir uv && \
+    uv sync --frozen --no-editable
+
+# Copier le code source
+COPY . .
+
+# ============================================
+# Stage 1 : MCP Server (transport SSE/HTTP)
+# ============================================
+FROM base as mcp
+
+EXPOSE 8000
+
+CMD [".venv/bin/python", "-m", "src.mcp.server"]
+
+# ============================================
+# Stage 2 : FastAPI (API REST)
+# ============================================
+FROM base as fastapi
+
+EXPOSE 8001
+
+# Attendre que PostgreSQL soit prêt avant de démarrer FastAPI
+HEALTHCHECK --interval=10s --timeout=5s --retries=5 \
+    CMD curl -f http://localhost:8001/docs || exit 1
+
+CMD [".venv/bin/uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8001"]
