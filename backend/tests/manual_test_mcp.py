@@ -44,7 +44,14 @@ async def test_reclamations(input_client_name: str, input_statut: str = None):
         result = await client.call_tool("search_reclamations", params)
         print(result)
 
-asyncio.run(test_reclamations(input_client_name="Robin S.A.S.", input_statut="ouverte"))
+# asyncio.run(test_reclamations(input_client_name="Robin S.A.S.", input_statut="ouverte"))
 
+async def test_delivery_estimate(input_order_id: str):
+    async with Client("http://127.0.0.1:8000/sse") as client:
+        params = {
+            "order_id": input_order_id
+        }
+        result = await client.call_tool("get_delivery_estimate", params)
+        print(result)
 
-# asyncio.run(test_stock_level(input_reference="COIL-S235-1.5"))
+asyncio.run(test_delivery_estimate(input_order_id="CMD-2024-0078"))
