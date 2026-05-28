@@ -17,10 +17,10 @@ class TestLoggingMiddleware:
         # Check that at least one log entry was created
         assert len(caplog.records) > 0
 
-    def test_middleware_logs_json_structure(self, api_client, caplog):
+    def test_middleware_logs_json_structure(self, api_client, caplog):  # noqa: ARG002
         """Test that middleware logs valid JSON."""
-        # with caplog.at_level(logging.INFO):
-        # response = api_client.get("/health")
+        with caplog.at_level(logging.INFO):
+            api_client.get("/health")
 
         # Find JSON log entries
         json_logs = []
