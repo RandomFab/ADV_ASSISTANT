@@ -60,7 +60,7 @@ class Client(Base):
     nom_entreprise: Mapped[str] = mapped_column(String(200), nullable=False)
     secteur: Mapped[SecteurEnum] = mapped_column(SAEnum(SecteurEnum), nullable=False)
     zone_geo: Mapped[str] = mapped_column(String(100))
-    commercial_attittre: Mapped[str] = mapped_column(String(100))
+    commercial_attitre: Mapped[str] = mapped_column(String(100))
     conditions_paiement: Mapped[str] = mapped_column(String(50))  # ex: "30j", "60j fin de mois"
     email: Mapped[str] = mapped_column(String(200))
     telephone: Mapped[str] = mapped_column(String(20))
