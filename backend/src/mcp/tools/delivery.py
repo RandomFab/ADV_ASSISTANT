@@ -7,7 +7,7 @@ en_attente → délai fabrication + transport / en_production → estimation dyn
 expediee → date prévue / livree → date réelle.
 """
 
-from datetime import date, timedelta
+from datetime import timedelta
 from src.mcp.mcp_instance import mcp
 from src.database.connection import SessionLocal
 from src.database.models import Commande, LigneCommande
