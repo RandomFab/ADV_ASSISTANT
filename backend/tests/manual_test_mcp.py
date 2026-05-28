@@ -19,4 +19,17 @@ async def test_client_info():
         )
         print(result)
 
-asyncio.run(test_client_info())
+# asyncio.run(test_client_info())
+
+async def test_stock_level(input_reference: str = None, input_mot_cle: str = None):
+    async with Client("http://127.0.0.1:8000/sse") as client:
+        params = {}
+        if input_reference:
+            params["reference"] = input_reference
+        if input_mot_cle:
+            params["mot_cle"] = input_mot_cle
+        result = await client.call_tool("get_stock_level", params)
+        print(result)
+
+asyncio.run(test_stock_level(input_reference="COIL-S235-1.5"))
+asyncio.run(test_stock_level(input_mot_cle="coil acier 3mm"))

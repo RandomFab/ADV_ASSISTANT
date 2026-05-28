@@ -6,7 +6,7 @@ Interroge PostgreSQL via SQLAlchemy (jointures Commande + Client + LigneCommande
 """
 from src.mcp.mcp_instance import mcp
 from src.database.connection import SessionLocal
-from src.database.models import Commande, Client, LigneCommande, Produit
+from src.database.models import Commande, LigneCommande
 
 from sqlalchemy.orm import joinedload
 
