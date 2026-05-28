@@ -26,7 +26,7 @@ COPY . .
 # ============================================
 FROM base as mcp
 
-EXPOSE 8001
+EXPOSE 8000
 
 CMD [".venv/bin/python", "-m", "src.mcp.server"]
 
@@ -35,10 +35,10 @@ CMD [".venv/bin/python", "-m", "src.mcp.server"]
 # ============================================
 FROM base as fastapi
 
-EXPOSE 8000
+EXPOSE 8001
 
 # Attendre que PostgreSQL soit prêt avant de démarrer FastAPI
 HEALTHCHECK --interval=10s --timeout=5s --retries=5 \
-    CMD curl -f http://localhost:8000/docs || exit 1
+    CMD curl -f http://localhost:8001/docs || exit 1
 
-CMD [".venv/bin/uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD [".venv/bin/uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8001"]

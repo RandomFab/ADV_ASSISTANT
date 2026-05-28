@@ -30,7 +30,7 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# CORS — nécessaire pour que Streamlit (port 8501) puisse appeler l'API (port 8000)
+# CORS — nécessaire pour que Streamlit (port 8501) puisse appeler l'API (port 8001)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # En prod : restreindre aux origines connues
