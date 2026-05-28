@@ -9,7 +9,7 @@ import os
 st.set_page_config(
     page_title="SteelBot — Assistant ADV",
     page_icon="🏭",
-    layout="wide",         # Utilise toute la largeur — indispensable pour le panneau latéral
+    layout="wide",  # Utilise toute la largeur — indispensable pour le panneau latéral
     initial_sidebar_state="expanded",
 )
 
@@ -18,7 +18,8 @@ API_URL = os.getenv("API_URL", "http://127.0.0.1:8001")
 # ─────────────────────────────────────────
 # CSS — Style sobre et professionnel
 # ─────────────────────────────────────────
-st.markdown("""
+st.markdown(
+    """
 <style>
     /* Police générale */
     html, body, [class*="css"] {
@@ -98,7 +99,9 @@ st.markdown("""
         color: #1a1a2e;
     }
 </style>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
 
 # ─────────────────────────────────────────
@@ -107,7 +110,7 @@ st.markdown("""
 # session_state persiste entre les rechargements de page.
 # Sans ça, l'historique des messages disparaît à chaque interaction.
 if "messages" not in st.session_state:
-    st.session_state.messages = []          # [{role, content, tools_called, latency_ms}]
+    st.session_state.messages = []  # [{role, content, tools_called, latency_ms}]
 if "question_from_button" not in st.session_state:
     st.session_state.question_from_button = None
 
@@ -132,14 +135,20 @@ def call_chat(question: str) -> dict:
         r = requests.post(
             f"{API_URL}/chat",
             json={"question": question},
-            timeout=60,     # L'agent peut prendre jusqu'à ~20s sur une question complexe
+            timeout=60,  # L'agent peut prendre jusqu'à ~20s sur une question complexe
         )
         r.raise_for_status()
         return {"ok": True, "data": r.json()}
     except requests.exceptions.Timeout:
-        return {"ok": False, "error": "L'agent a mis trop de temps à répondre (timeout 60s)."}
+        return {
+            "ok": False,
+            "error": "L'agent a mis trop de temps à répondre (timeout 60s).",
+        }
     except requests.exceptions.ConnectionError:
-        return {"ok": False, "error": f"Impossible de joindre l'API ({API_URL}). Est-elle démarrée ?"}
+        return {
+            "ok": False,
+            "error": f"Impossible de joindre l'API ({API_URL}). Est-elle démarrée ?",
+        }
     except Exception as e:
         return {"ok": False, "error": str(e)}
 
@@ -156,13 +165,22 @@ with st.sidebar:
     st.markdown("### 📡 Statut système")
     health = check_api_health()
     if health["ok"]:
-        st.markdown('<span class="status-ok">● API en ligne</span>', unsafe_allow_html=True)
+        st.markdown(
+            '<span class="status-ok">● API en ligne</span>', unsafe_allow_html=True
+        )
         if health["data"] and health["data"].get("agent") == "ready":
-            st.markdown('<span class="status-ok">● Agent prêt</span>', unsafe_allow_html=True)
+            st.markdown(
+                '<span class="status-ok">● Agent prêt</span>', unsafe_allow_html=True
+            )
         else:
-            st.markdown('<span class="status-ko">● Agent non initialisé</span>', unsafe_allow_html=True)
+            st.markdown(
+                '<span class="status-ko">● Agent non initialisé</span>',
+                unsafe_allow_html=True,
+            )
     else:
-        st.markdown('<span class="status-ko">● API hors ligne</span>', unsafe_allow_html=True)
+        st.markdown(
+            '<span class="status-ko">● API hors ligne</span>', unsafe_allow_html=True
+        )
         st.caption("Démarrer l'API : `uvicorn src.api.main:app --port 8001`")
 
     st.divider()
@@ -191,14 +209,22 @@ with st.sidebar:
 
     if st.session_state.messages:
         last_bot_msg = next(
-            (m for m in reversed(st.session_state.messages) if m["role"] == "assistant"),
-            None
+            (
+                m
+                for m in reversed(st.session_state.messages)
+                if m["role"] == "assistant"
+            ),
+            None,
         )
         if last_bot_msg and last_bot_msg.get("tools_called"):
             for tool in last_bot_msg["tools_called"]:
-                st.markdown(f'<span class="tool-badge">🔧 {tool}</span>', unsafe_allow_html=True)
+                st.markdown(
+                    f'<span class="tool-badge">🔧 {tool}</span>', unsafe_allow_html=True
+                )
             if last_bot_msg.get("latency_ms"):
-                st.caption(f"⏱ Temps de réponse agent : {last_bot_msg['latency_ms']} ms")
+                st.caption(
+                    f"⏱ Temps de réponse agent : {last_bot_msg['latency_ms']} ms"
+                )
         else:
             st.caption("Aucun outil appelé pour le moment.")
 
@@ -213,30 +239,37 @@ with st.sidebar:
 # ─────────────────────────────────────────
 # Zone principale — En-tête + Chat
 # ─────────────────────────────────────────
-st.markdown("""
+st.markdown(
+    """
 <div class="steelbot-header">
     <p class="steelbot-title">🏭 SteelBot</p>
     <p class="steelbot-subtitle">Assistant IA pour l'Administration des Ventes · Transformation métallurgique</p>
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
 # Affichage de l'historique des messages
 for msg in st.session_state.messages:
     if msg["role"] == "user":
         st.markdown(
             f'<div class="chat-message user-message">👤 <strong>Vous</strong><br>{msg["content"]}</div>',
-            unsafe_allow_html=True
+            unsafe_allow_html=True,
         )
     else:
         # Réponse de l'agent
         tools_html = ""
         if msg.get("tools_called"):
-            tools_html = "<br><small style='color:#718096'>Outils utilisés : " + \
-                         " ".join(f'<span class="tool-badge">{t}</span>' for t in msg["tools_called"]) + \
-                         "</small>"
+            tools_html = (
+                "<br><small style='color:#718096'>Outils utilisés : "
+                + " ".join(
+                    f'<span class="tool-badge">{t}</span>' for t in msg["tools_called"]
+                )
+                + "</small>"
+            )
         st.markdown(
             f'<div class="chat-message bot-message">🤖 <strong>SteelBot</strong><br>{msg["content"]}{tools_html}</div>',
-            unsafe_allow_html=True
+            unsafe_allow_html=True,
         )
 
 
@@ -246,7 +279,7 @@ for msg in st.session_state.messages:
 # Gestion du pré-remplissage depuis les boutons exemples
 default_value = st.session_state.question_from_button or ""
 if st.session_state.question_from_button:
-    st.session_state.question_from_button = None   # Reset pour ne pas boucler
+    st.session_state.question_from_button = None  # Reset pour ne pas boucler
 
 question = st.chat_input(
     "Posez une question sur une commande, un client, un stock...",
@@ -272,18 +305,22 @@ if question:
     # 3. Traiter la réponse
     if result["ok"]:
         data = result["data"]
-        st.session_state.messages.append({
-            "role": "assistant",
-            "content": data.get("answer", "Pas de réponse."),
-            "tools_called": data.get("tools_called", []),
-            "latency_ms": data.get("latency_ms"),
-        })
+        st.session_state.messages.append(
+            {
+                "role": "assistant",
+                "content": data.get("answer", "Pas de réponse."),
+                "tools_called": data.get("tools_called", []),
+                "latency_ms": data.get("latency_ms"),
+            }
+        )
     else:
-        st.session_state.messages.append({
-            "role": "assistant",
-            "content": f"❌ Erreur : {result['error']}",
-            "tools_called": [],
-        })
+        st.session_state.messages.append(
+            {
+                "role": "assistant",
+                "content": f"❌ Erreur : {result['error']}",
+                "tools_called": [],
+            }
+        )
 
     # 4. Rerun pour afficher les nouveaux messages
     st.rerun()
