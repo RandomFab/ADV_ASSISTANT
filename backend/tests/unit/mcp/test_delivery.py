@@ -36,7 +36,10 @@ class TestGetDeliveryEstimate:
         """Test estimation for cancelled order."""
         # Create a cancelled order
         from src.database.models import Client
-        client = db_with_seed.query(Client).filter_by(nom_entreprise="Acme Corp").first()
+
+        client = (
+            db_with_seed.query(Client).filter_by(nom_entreprise="Acme Corp").first()
+        )
 
         cancelled_order = Commande(
             numero_commande="CMD-2024-9999",
@@ -44,7 +47,7 @@ class TestGetDeliveryEstimate:
             date_commande=date.today() - timedelta(days=5),
             date_livraison_prevue=date.today() + timedelta(days=5),
             statut=StatutCommandeEnum.annulee,
-            montant_total_eur=1000.0
+            montant_total_eur=1000.0,
         )
         db_with_seed.add(cancelled_order)
         db_with_seed.commit()
@@ -58,7 +61,10 @@ class TestGetDeliveryEstimate:
     def test_shipped_order_shows_planned_date(self, mcp_test_env, db_with_seed):
         """Test that shipped order shows planned delivery date."""
         from src.database.models import Client
-        client = db_with_seed.query(Client).filter_by(nom_entreprise="Acme Corp").first()
+
+        client = (
+            db_with_seed.query(Client).filter_by(nom_entreprise="Acme Corp").first()
+        )
 
         shipped_order = Commande(
             numero_commande="CMD-2024-8888",
@@ -66,7 +72,7 @@ class TestGetDeliveryEstimate:
             date_commande=date.today() - timedelta(days=15),
             date_livraison_prevue=date.today() + timedelta(days=3),
             statut=StatutCommandeEnum.expediee,
-            montant_total_eur=2000.0
+            montant_total_eur=2000.0,
         )
         db_with_seed.add(shipped_order)
         db_with_seed.commit()
@@ -80,7 +86,10 @@ class TestGetDeliveryEstimate:
     def test_pending_order_calculates_max_delay(self, mcp_test_env, db_with_seed):
         """Test that estimation uses max manufacturing delay + 5 days."""
         from src.database.models import Client, LigneCommande
-        client = db_with_seed.query(Client).filter_by(nom_entreprise="Acme Corp").first()
+
+        client = (
+            db_with_seed.query(Client).filter_by(nom_entreprise="Acme Corp").first()
+        )
 
         order = Commande(
             numero_commande="CMD-2024-7777",
@@ -88,21 +97,24 @@ class TestGetDeliveryEstimate:
             date_commande=date.today(),
             date_livraison_prevue=date.today() + timedelta(days=10),
             statut=StatutCommandeEnum.en_attente,
-            montant_total_eur=1000.0
+            montant_total_eur=1000.0,
         )
         db_with_seed.add(order)
         db_with_seed.flush()
 
         # Get a product and add a line with known manufacturing delay
         from src.database.models import Produit
-        produit = db_with_seed.query(Produit).filter_by(reference="COIL-304-2MM").first()
+
+        produit = (
+            db_with_seed.query(Produit).filter_by(reference="COIL-304-2MM").first()
+        )
 
         ligne = LigneCommande(
             commande_id=order.id,
             produit_id=produit.id,
             quantite=1,
             prix_unitaire=1200.0,
-            montant_ligne=1200.0
+            montant_ligne=1200.0,
         )
         db_with_seed.add(ligne)
         db_with_seed.commit()
@@ -125,7 +137,11 @@ class TestGetDeliveryEstimate:
         result = get_delivery_estimate("CMD-2024-0001")
 
         required_fields = [
-            "found", "numero_commande", "client", "statut", "estimation_livraison"
+            "found",
+            "numero_commande",
+            "client",
+            "statut",
+            "estimation_livraison",
         ]
         for field in required_fields:
             assert field in result

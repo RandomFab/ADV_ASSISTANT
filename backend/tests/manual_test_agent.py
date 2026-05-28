@@ -17,9 +17,7 @@ async def main():
 
         print("SteelBot : ", end="", flush=True)
 
-        response = await agent.ainvoke(
-            {"messages": [HumanMessage(content=question)]}
-        )
+        response = await agent.ainvoke({"messages": [HumanMessage(content=question)]})
 
         # Le dernier message de la liste est la réponse finale de l'agent
         final_message = response["messages"][-1]

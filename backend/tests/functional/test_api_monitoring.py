@@ -1,7 +1,6 @@
 # backend/tests/functional/test_api_monitoring.py
 
 
-
 class TestMonitoringCheckEndpoint:
     """Test suite for GET /monitoring/check endpoint."""
 
@@ -28,7 +27,9 @@ class TestMonitoringCheckEndpoint:
         assert data["nb_interactions_analysees"] == 0
         assert len(data["alertes"]) == 0
 
-    def test_monitoring_check_with_interactions(self, api_client, sample_interactions_log):
+    def test_monitoring_check_with_interactions(
+        self, api_client, sample_interactions_log
+    ):
         """Test monitoring check with interactions available."""
         response = api_client.get("/monitoring/check")
 
@@ -38,7 +39,9 @@ class TestMonitoringCheckEndpoint:
         assert data["nb_interactions_analysees"] > 0
         assert "metriques" in data
 
-    def test_monitoring_check_metrics_included(self, api_client, sample_interactions_log):
+    def test_monitoring_check_metrics_included(
+        self, api_client, sample_interactions_log
+    ):
         """Test that metrics are included in check response."""
         response = api_client.get("/monitoring/check")
 
@@ -50,7 +53,9 @@ class TestMonitoringCheckEndpoint:
         assert "erreurs" in metrics
         assert "outils" in metrics
 
-    def test_monitoring_check_alerts_structure(self, api_client, sample_interactions_log):
+    def test_monitoring_check_alerts_structure(
+        self, api_client, sample_interactions_log
+    ):
         """Test alert structure in monitoring check."""
         response = api_client.get("/monitoring/check")
 
@@ -64,14 +69,21 @@ class TestMonitoringCheckEndpoint:
             assert "seuil" in alert
             assert "github_issue" in alert
 
-    def test_monitoring_check_response_schema(self, api_client, sample_interactions_log):
+    def test_monitoring_check_response_schema(
+        self, api_client, sample_interactions_log
+    ):
         """Test complete response schema."""
         response = api_client.get("/monitoring/check")
 
         assert response.status_code == 200
         data = response.json()
 
-        required_fields = ["status", "nb_interactions_analysees", "metriques", "alertes"]
+        required_fields = [
+            "status",
+            "nb_interactions_analysees",
+            "metriques",
+            "alertes",
+        ]
         for field in required_fields:
             assert field in data
 
@@ -95,7 +107,9 @@ class TestMonitoringReportEndpoint:
         assert data["status"] == "ok"
         assert "report_path" in data
 
-    def test_monitoring_report_path_is_string(self, api_client, sample_interactions_log):
+    def test_monitoring_report_path_is_string(
+        self, api_client, sample_interactions_log
+    ):
         """Test that report_path is a string."""
         response = api_client.get("/monitoring/report")
 
@@ -104,7 +118,9 @@ class TestMonitoringReportEndpoint:
 
         assert isinstance(data["report_path"], str)
 
-    def test_monitoring_report_no_interactions_error(self, api_client, tmp_interactions_log):
+    def test_monitoring_report_no_interactions_error(
+        self, api_client, tmp_interactions_log
+    ):
         """Test report generation fails with no interactions."""
         response = api_client.get("/monitoring/report")
 
@@ -119,7 +135,9 @@ class TestMonitoringReportEndpoint:
             # Or might return path even with 0 interactions
             pass
 
-    def test_monitoring_report_response_schema(self, api_client, sample_interactions_log):
+    def test_monitoring_report_response_schema(
+        self, api_client, sample_interactions_log
+    ):
         """Test report response schema."""
         response = api_client.get("/monitoring/report")
 

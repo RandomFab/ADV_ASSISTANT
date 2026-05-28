@@ -2,9 +2,18 @@
 
 from datetime import datetime, timedelta
 from src.database.models import (
-    Client, Produit, Commande, LigneCommande, Reclamation,
-    SecteurEnum, FamilleEnum, MatiereEnum, StatutCommandeEnum,
-    TypeReclamationEnum, StatutReclamationEnum, PrioriteEnum
+    Client,
+    Produit,
+    Commande,
+    LigneCommande,
+    Reclamation,
+    SecteurEnum,
+    FamilleEnum,
+    MatiereEnum,
+    StatutCommandeEnum,
+    TypeReclamationEnum,
+    StatutReclamationEnum,
+    PrioriteEnum,
 )
 
 
@@ -20,18 +29,24 @@ class TestClientModel:
             commercial_attitre="Agent Test",
             conditions_paiement="30j",
             email="test@corp.com",
-            telephone="+33600000000"
+            telephone="+33600000000",
         )
         db_session.add(client)
         db_session.commit()
 
-        retrieved = db_session.query(Client).filter_by(nom_entreprise="Test Corp").first()
+        retrieved = (
+            db_session.query(Client).filter_by(nom_entreprise="Test Corp").first()
+        )
         assert retrieved is not None
         assert retrieved.nom_entreprise == "Test Corp"
 
     def test_client_enum_values(self, db_session):
         """Test client with different sector enums."""
-        for secteur in [SecteurEnum.btp, SecteurEnum.automobile, SecteurEnum.agroalimentaire]:
+        for secteur in [
+            SecteurEnum.btp,
+            SecteurEnum.automobile,
+            SecteurEnum.agroalimentaire,
+        ]:
             client = Client(
                 nom_entreprise=f"Corp {secteur.value}",
                 secteur=secteur,
@@ -39,7 +54,7 @@ class TestClientModel:
                 commercial_attitre="Test",
                 conditions_paiement="30j",
                 email="test@test.com",
-                telephone="+33600000000"
+                telephone="+33600000000",
             )
             db_session.add(client)
 
@@ -50,7 +65,9 @@ class TestClientModel:
 
     def test_client_relationships(self, db_session, db_with_seed):
         """Test client relationships with commandes and reclamations."""
-        client = db_with_seed.query(Client).filter_by(nom_entreprise="Acme Corp").first()
+        client = (
+            db_with_seed.query(Client).filter_by(nom_entreprise="Acme Corp").first()
+        )
 
         assert len(client.commandes) > 0
         assert hasattr(client, "reclamations")
@@ -71,7 +88,7 @@ class TestProduitModel:
             prix_unitaire_eur=500.0,
             poids_kg_ml=3.5,
             stock_disponible=100,
-            stock_reserve=10
+            stock_reserve=10,
         )
         db_session.add(produit)
         db_session.commit()
@@ -95,7 +112,7 @@ class TestProduitModel:
                     nuance="Test",
                     epaisseur_mm=1.0,
                     prix_unitaire_eur=100.0,
-                    poids_kg_ml=1.0
+                    poids_kg_ml=1.0,
                 )
                 db_session.add(produit)
 
@@ -116,7 +133,7 @@ class TestProduitModel:
             prix_unitaire_eur=500.0,
             poids_kg_ml=3.5,
             stock_disponible=100,
-            stock_reserve=30
+            stock_reserve=30,
         )
         db_session.add(produit)
         db_session.commit()
@@ -142,12 +159,16 @@ class TestCommandeModel:
             date_commande=datetime.utcnow(),
             date_livraison_prevue=datetime.utcnow() + timedelta(days=10),
             statut=StatutCommandeEnum.en_attente,
-            montant_total_eur=1000.0
+            montant_total_eur=1000.0,
         )
         db_with_seed.add(commande)
         db_with_seed.commit()
 
-        retrieved = db_with_seed.query(Commande).filter_by(numero_commande="TEST-CMD-001").first()
+        retrieved = (
+            db_with_seed.query(Commande)
+            .filter_by(numero_commande="TEST-CMD-001")
+            .first()
+        )
         assert retrieved is not None
         assert retrieved.statut == StatutCommandeEnum.en_attente
 
@@ -162,7 +183,7 @@ class TestCommandeModel:
                 date_commande=datetime.utcnow(),
                 date_livraison_prevue=datetime.utcnow() + timedelta(days=10),
                 statut=statut,
-                montant_total_eur=500.0
+                montant_total_eur=500.0,
             )
             db_with_seed.add(commande)
 
@@ -199,15 +220,17 @@ class TestLigneCommandeModel:
             produit_id=produit.id,
             quantite=5,
             prix_unitaire=100.0,
-            montant_ligne=500.0
+            montant_ligne=500.0,
         )
         db_with_seed.add(ligne)
         db_with_seed.commit()
 
-        retrieved = db_with_seed.query(LigneCommande).filter_by(
-            commande_id=commande.id,
-            produit_id=produit.id
-        ).order_by(LigneCommande.id.desc()).first()
+        retrieved = (
+            db_with_seed.query(LigneCommande)
+            .filter_by(commande_id=commande.id, produit_id=produit.id)
+            .order_by(LigneCommande.id.desc())
+            .first()
+        )
 
         assert retrieved is not None
         assert retrieved.quantite == 5
@@ -236,14 +259,16 @@ class TestReclamationModel:
             type=TypeReclamationEnum.defaut_soudure,
             statut=StatutReclamationEnum.ouverte,
             description="Test defect",
-            priorite=PrioriteEnum.haute
+            priorite=PrioriteEnum.haute,
         )
         db_with_seed.add(reclamation)
         db_with_seed.commit()
 
-        retrieved = db_with_seed.query(Reclamation).filter_by(
-            numero_ticket="REC-TEST-001"
-        ).first()
+        retrieved = (
+            db_with_seed.query(Reclamation)
+            .filter_by(numero_ticket="REC-TEST-001")
+            .first()
+        )
 
         assert retrieved is not None
         assert retrieved.statut == StatutReclamationEnum.ouverte
@@ -260,7 +285,7 @@ class TestReclamationModel:
                 type=rec_type,
                 statut=StatutReclamationEnum.ouverte,
                 description="Test",
-                priorite=PrioriteEnum.moyenne
+                priorite=PrioriteEnum.moyenne,
             )
             db_with_seed.add(reclamation)
 
@@ -281,15 +306,17 @@ class TestReclamationModel:
                 type=TypeReclamationEnum.retard_livraison,
                 statut=statut,
                 description="Test",
-                priorite=PrioriteEnum.basse
+                priorite=PrioriteEnum.basse,
             )
             db_with_seed.add(reclamation)
 
         db_with_seed.commit()
 
-        reclamations = db_with_seed.query(Reclamation).filter(
-            Reclamation.numero_ticket.like("REC-STATUS%")
-        ).all()
+        reclamations = (
+            db_with_seed.query(Reclamation)
+            .filter(Reclamation.numero_ticket.like("REC-STATUS%"))
+            .all()
+        )
         assert len(reclamations) >= 3
 
     def test_reclamation_closed_with_date(self, db_session, db_with_seed):
@@ -305,14 +332,16 @@ class TestReclamationModel:
             type=TypeReclamationEnum.defaut_soudure,
             statut=StatutReclamationEnum.cloturee,
             description="Fixed",
-            priorite=PrioriteEnum.basse
+            priorite=PrioriteEnum.basse,
         )
         db_with_seed.add(reclamation)
         db_with_seed.commit()
 
-        retrieved = db_with_seed.query(Reclamation).filter_by(
-            numero_ticket="REC-CLOSED-001"
-        ).first()
+        retrieved = (
+            db_with_seed.query(Reclamation)
+            .filter_by(numero_ticket="REC-CLOSED-001")
+            .first()
+        )
 
         assert retrieved.date_cloture is not None
 
@@ -329,7 +358,9 @@ class TestDatabaseIntegration:
     def test_full_workflow(self, db_session, db_with_seed):
         """Test complete workflow: client -> commande -> ligne -> produit."""
         # Get client
-        client = db_with_seed.query(Client).filter_by(nom_entreprise="Acme Corp").first()
+        client = (
+            db_with_seed.query(Client).filter_by(nom_entreprise="Acme Corp").first()
+        )
         assert client is not None
 
         # Verify commandes
@@ -354,7 +385,9 @@ class TestDatabaseIntegration:
 
     def test_cascade_relationships(self, db_session, db_with_seed):
         """Test that relationships cascade properly."""
-        client = db_with_seed.query(Client).filter_by(nom_entreprise="Acme Corp").first()
+        client = (
+            db_with_seed.query(Client).filter_by(nom_entreprise="Acme Corp").first()
+        )
 
         # Verify all related objects are accessible
         assert len(client.commandes) > 0

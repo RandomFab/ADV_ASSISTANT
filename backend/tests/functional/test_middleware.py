@@ -20,7 +20,7 @@ class TestLoggingMiddleware:
     def test_middleware_logs_json_structure(self, api_client, caplog):
         """Test that middleware logs valid JSON."""
         # with caplog.at_level(logging.INFO):
-            # response = api_client.get("/health")
+        # response = api_client.get("/health")
 
         # Find JSON log entries
         json_logs = []
@@ -190,7 +190,9 @@ class TestLoggingMiddleware:
                 pass
 
         if json_logs:
-            request_ids = [log.get("request_id") for log in json_logs if "request_id" in log]
+            request_ids = [
+                log.get("request_id") for log in json_logs if "request_id" in log
+            ]
             assert len(request_ids) > 0
             # Request IDs should be UUIDs
             for req_id in request_ids:

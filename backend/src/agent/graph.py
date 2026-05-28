@@ -16,7 +16,9 @@ async def create_agent():
 
     # 1. Le modèle Mistral
     llm = ChatMistralAI(
-        model="mistral-small-latest", api_key=os.getenv("MISTRAL_API_KEY"), temperature=0
+        model="mistral-small-latest",
+        api_key=os.getenv("MISTRAL_API_KEY"),
+        temperature=0,
     )
 
     # 2. Connexion au serveur MCP

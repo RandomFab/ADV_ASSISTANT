@@ -3,7 +3,9 @@
 from unittest.mock import Mock
 from datetime import datetime, timezone
 from src.monitoring.alerting import (
-    run_monitoring_check, _create_github_issue, _build_issue_body
+    run_monitoring_check,
+    _create_github_issue,
+    _build_issue_body,
 )
 
 
@@ -14,7 +16,7 @@ class TestBuildIssueBody:
         """Test that issue body contains alert type."""
         metrics = {
             "nb_interactions": 100,
-            "latence": {"moyenne_ms": 600, "max_ms": 1000}
+            "latence": {"moyenne_ms": 600, "max_ms": 1000},
         }
         body = _build_issue_body("Latence excessive", metrics, 600, 500)
 
@@ -43,7 +45,9 @@ class TestBuildIssueBody:
 class TestCreateGithubIssue:
     """Test suite for _create_github_issue."""
 
-    def test_github_issue_created_successfully(self, mock_github_env, mock_github_requests):
+    def test_github_issue_created_successfully(
+        self, mock_github_env, mock_github_requests
+    ):
         """Test successful GitHub issue creation."""
         result = _create_github_issue("Test Title", "Test body")
 
@@ -73,6 +77,7 @@ class TestCreateGithubIssue:
 
     def test_github_api_failure(self, mock_github_env, monkeypatch):
         """Test GitHub API failure handling."""
+
         def mock_post(*args, **kwargs):
             raise Exception("API Error")
 
@@ -83,7 +88,9 @@ class TestCreateGithubIssue:
         assert result["created"] is False
         assert "API Error" in result["reason"]
 
-    def test_github_issue_payload_structure(self, mock_github_env, mock_github_requests):
+    def test_github_issue_payload_structure(
+        self, mock_github_env, mock_github_requests
+    ):
         """Test that GitHub API is called with correct payload."""
         title = "Test Alert Title"
         body = "Test alert body content"
@@ -122,13 +129,14 @@ class TestRunMonitoringCheck:
                 "status": "success",
                 "tools_called": ["tool"],
                 "answer_length": 100,
-                "timestamp": datetime.now(timezone.utc).isoformat()
+                "timestamp": datetime.now(timezone.utc).isoformat(),
             }
             for i in range(5)
         ]
 
         # Write to log
         import json
+
         with open(tmp_interactions_log, "w") as f:
             for i in interactions:
                 f.write(json.dumps(i) + "\n")
@@ -138,7 +146,10 @@ class TestRunMonitoringCheck:
         monkeypatch.setenv("GITHUB_REPO", "test/repo")
         mock_post = Mock()
         mock_post.return_value.status_code = 201
-        mock_post.return_value.json.return_value = {"number": 1, "html_url": "http://test"}
+        mock_post.return_value.json.return_value = {
+            "number": 1,
+            "html_url": "http://test",
+        }
         monkeypatch.setattr("src.monitoring.alerting.http_requests.post", mock_post)
 
         result = run_monitoring_check(last_n=10)
@@ -155,12 +166,13 @@ class TestRunMonitoringCheck:
                 "status": "error",  # 100% error rate
                 "tools_called": [],
                 "answer_length": 50,
-                "timestamp": datetime.now(timezone.utc).isoformat()
+                "timestamp": datetime.now(timezone.utc).isoformat(),
             }
             for i in range(5)
         ]
 
         import json
+
         with open(tmp_interactions_log, "w") as f:
             for i in interactions:
                 f.write(json.dumps(i) + "\n")
@@ -169,7 +181,10 @@ class TestRunMonitoringCheck:
         monkeypatch.setenv("GITHUB_REPO", "test/repo")
         mock_post = Mock()
         mock_post.return_value.status_code = 201
-        mock_post.return_value.json.return_value = {"number": 1, "html_url": "http://test"}
+        mock_post.return_value.json.return_value = {
+            "number": 1,
+            "html_url": "http://test",
+        }
         monkeypatch.setattr("src.monitoring.alerting.http_requests.post", mock_post)
 
         result = run_monitoring_check(last_n=10)
@@ -186,12 +201,13 @@ class TestRunMonitoringCheck:
                 "status": "success",
                 "tools_called": [],  # No tools called
                 "answer_length": 100,
-                "timestamp": datetime.now(timezone.utc).isoformat()
+                "timestamp": datetime.now(timezone.utc).isoformat(),
             }
             for i in range(5)
         ]
 
         import json
+
         with open(tmp_interactions_log, "w") as f:
             for i in interactions:
                 f.write(json.dumps(i) + "\n")
@@ -200,7 +216,10 @@ class TestRunMonitoringCheck:
         monkeypatch.setenv("GITHUB_REPO", "test/repo")
         mock_post = Mock()
         mock_post.return_value.status_code = 201
-        mock_post.return_value.json.return_value = {"number": 1, "html_url": "http://test"}
+        mock_post.return_value.json.return_value = {
+            "number": 1,
+            "html_url": "http://test",
+        }
         monkeypatch.setattr("src.monitoring.alerting.http_requests.post", mock_post)
 
         result = run_monitoring_check(last_n=10)
@@ -217,12 +236,13 @@ class TestRunMonitoringCheck:
                 "status": "success",
                 "tools_called": ["tool"],  # Tools called
                 "answer_length": 200,
-                "timestamp": datetime.now(timezone.utc).isoformat()
+                "timestamp": datetime.now(timezone.utc).isoformat(),
             }
             for i in range(5)
         ]
 
         import json
+
         with open(tmp_interactions_log, "w") as f:
             for i in interactions:
                 f.write(json.dumps(i) + "\n")
@@ -241,12 +261,13 @@ class TestRunMonitoringCheck:
                 "status": "error",  # high error rate
                 "tools_called": [],  # no tools
                 "answer_length": 50,
-                "timestamp": datetime.now(timezone.utc).isoformat()
+                "timestamp": datetime.now(timezone.utc).isoformat(),
             }
             for i in range(5)
         ]
 
         import json
+
         with open(tmp_interactions_log, "w") as f:
             for i in interactions:
                 f.write(json.dumps(i) + "\n")
@@ -255,7 +276,10 @@ class TestRunMonitoringCheck:
         monkeypatch.setenv("GITHUB_REPO", "test/repo")
         mock_post = Mock()
         mock_post.return_value.status_code = 201
-        mock_post.return_value.json.return_value = {"number": 1, "html_url": "http://test"}
+        mock_post.return_value.json.return_value = {
+            "number": 1,
+            "html_url": "http://test",
+        }
         monkeypatch.setattr("src.monitoring.alerting.http_requests.post", mock_post)
 
         result = run_monitoring_check(last_n=10)
@@ -272,11 +296,12 @@ class TestRunMonitoringCheck:
                 "status": "success",
                 "tools_called": ["tool"],
                 "answer_length": 100,
-                "timestamp": datetime.now(timezone.utc).isoformat()
+                "timestamp": datetime.now(timezone.utc).isoformat(),
             }
         ]
 
         import json
+
         with open(tmp_interactions_log, "w") as f:
             for i in interactions:
                 f.write(json.dumps(i) + "\n")

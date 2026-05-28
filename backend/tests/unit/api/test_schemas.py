@@ -66,7 +66,7 @@ class TestChatResponse:
             question="What is the status?",
             answer="The order is delivered.",
             tools_called=["get_order_status"],
-            latency_ms=500
+            latency_ms=500,
         )
 
         assert response.request_id == "req-123"
@@ -82,7 +82,7 @@ class TestChatResponse:
             question="Who are you?",
             answer="I am SteelBot.",
             tools_called=[],
-            latency_ms=300
+            latency_ms=300,
         )
 
         assert response.tools_called == []
@@ -95,7 +95,7 @@ class TestChatResponse:
             question="Full client info?",
             answer="Client details and orders...",
             tools_called=tools,
-            latency_ms=1200
+            latency_ms=1200,
         )
 
         assert response.tools_called == tools
@@ -106,7 +106,7 @@ class TestChatResponse:
             ChatResponse(
                 request_id="req-123",
                 question="Test",
-                answer="Test answer"
+                answer="Test answer",
                 # Missing tools_called and latency_ms
             )
 
@@ -118,7 +118,7 @@ class TestChatResponse:
                 question="Test",
                 answer="Test",
                 tools_called=[],
-                latency_ms="500ms"  # Should be int
+                latency_ms="500ms",  # Should be int
             )
 
     def test_negative_latency(self):
@@ -129,7 +129,7 @@ class TestChatResponse:
             question="Test",
             answer="Test",
             tools_called=[],
-            latency_ms=-100
+            latency_ms=-100,
         )
         assert response.latency_ms == -100
 
@@ -140,7 +140,7 @@ class TestChatResponse:
             question="Test",
             answer="Test",
             tools_called=[],
-            latency_ms=0
+            latency_ms=0,
         )
         assert response.latency_ms == 0
 
@@ -152,7 +152,7 @@ class TestChatResponse:
             question="Test",
             answer=long_answer,
             tools_called=[],
-            latency_ms=1000
+            latency_ms=1000,
         )
 
         assert len(response.answer) == 10000
@@ -164,7 +164,7 @@ class TestChatResponse:
             question="État de la commande? 🏭",
             answer="Réponse: Livrée ✅",
             tools_called=["outil-test"],
-            latency_ms=500
+            latency_ms=500,
         )
 
         assert "éàü" in response.request_id
@@ -178,7 +178,7 @@ class TestChatResponse:
             question="Test?",
             answer="Answer.",
             tools_called=["tool1"],
-            latency_ms=400
+            latency_ms=400,
         )
 
         # Serialize to dict
@@ -195,7 +195,7 @@ class TestChatResponse:
             question="Test",
             answer="Test",
             tools_called=["tool_a", "tool_b"],
-            latency_ms=500
+            latency_ms=500,
         )
 
         # Verify it's a list of strings

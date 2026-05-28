@@ -44,7 +44,7 @@ class TestLoadInteractions:
         """Test that corrupted JSON lines are ignored."""
         with open(tmp_interactions_log, "w", encoding="utf-8") as f:
             f.write('{"valid": "json"}\n')
-            f.write('this is not json at all\n')
+            f.write("this is not json at all\n")
             f.write('{"another": "valid"}\n')
 
         interactions = load_interactions()
@@ -57,8 +57,8 @@ class TestLoadInteractions:
         """Test that empty lines are skipped."""
         with open(tmp_interactions_log, "w", encoding="utf-8") as f:
             f.write('{"id": 1}\n')
-            f.write('\n')
-            f.write('\n')
+            f.write("\n")
+            f.write("\n")
             f.write('{"id": 2}\n')
 
         interactions = load_interactions()
@@ -154,7 +154,13 @@ class TestComputeMetrics:
         interactions = load_interactions()
         metrics = compute_metrics(interactions)
 
-        required_sections = ["nb_interactions", "latence", "erreurs", "outils", "reponses"]
+        required_sections = [
+            "nb_interactions",
+            "latence",
+            "erreurs",
+            "outils",
+            "reponses",
+        ]
         for section in required_sections:
             assert section in metrics
 
@@ -167,7 +173,7 @@ class TestComputeMetrics:
                 "status": "success",
                 "tools_called": ["tool_a"],
                 "answer_length": 200,
-                "timestamp": datetime.utcnow().isoformat()
+                "timestamp": datetime.utcnow().isoformat(),
             },
             {
                 "request_id": "2",
@@ -175,8 +181,8 @@ class TestComputeMetrics:
                 "status": "success",
                 "tools_called": ["tool_b"],
                 "answer_length": 300,
-                "timestamp": datetime.utcnow().isoformat()
-            }
+                "timestamp": datetime.utcnow().isoformat(),
+            },
         ]
 
         metrics = compute_metrics(interactions)

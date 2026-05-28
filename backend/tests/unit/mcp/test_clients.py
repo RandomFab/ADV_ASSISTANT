@@ -55,17 +55,20 @@ class TestGetClientInfo:
         from datetime import datetime, timedelta
 
         from src.database.models import Client
-        client = db_with_seed.query(Client).filter_by(nom_entreprise="Acme Corp").first()
+
+        client = (
+            db_with_seed.query(Client).filter_by(nom_entreprise="Acme Corp").first()
+        )
         client_id = client.id
 
         for i in range(3, 8):
             cmd = Commande(
                 numero_commande=f"CMD-2024-000{i}",
                 client_id=client_id,
-                date_commande=datetime.utcnow() - timedelta(days=10-i),
+                date_commande=datetime.utcnow() - timedelta(days=10 - i),
                 date_livraison_prevue=datetime.utcnow() + timedelta(days=10),
                 statut=StatutCommandeEnum.en_attente,
-                montant_total_eur=1000.0
+                montant_total_eur=1000.0,
             )
             db_with_seed.add(cmd)
         db_with_seed.commit()
@@ -80,8 +83,7 @@ class TestGetClientInfo:
 
         # CMD-2024-0001 has 1 reclamation
         cmd_with_rec = next(
-            (c for c in commandes if c["numero_commande"] == "CMD-2024-0001"),
-            None
+            (c for c in commandes if c["numero_commande"] == "CMD-2024-0001"), None
         )
         assert cmd_with_rec is not None
         assert len(cmd_with_rec["reclamations"]) == 1
@@ -93,8 +95,7 @@ class TestGetClientInfo:
         commandes = result["commandes"]
 
         cmd_no_rec = next(
-            (c for c in commandes if c["numero_commande"] == "CMD-2024-0002"),
-            None
+            (c for c in commandes if c["numero_commande"] == "CMD-2024-0002"), None
         )
         assert cmd_no_rec is not None
         assert len(cmd_no_rec["reclamations"]) == 0
@@ -103,6 +104,12 @@ class TestGetClientInfo:
         """Test response has all required fields."""
         result = get_client_info("Acme Corp")
 
-        required_fields = ["found", "nom_entreprise", "commercial_attitre", "ca_cumule_eur", "commandes"]
+        required_fields = [
+            "found",
+            "nom_entreprise",
+            "commercial_attitre",
+            "ca_cumule_eur",
+            "commandes",
+        ]
         for field in required_fields:
             assert field in result

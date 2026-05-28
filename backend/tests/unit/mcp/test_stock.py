@@ -20,7 +20,10 @@ class TestGetStockLevel:
         result = get_stock_level(mot_cle="inox")
 
         assert result["found"] is True
-        assert "304" in result["designation"].lower() or "inox" in result["designation"].lower()
+        assert (
+            "304" in result["designation"].lower()
+            or "inox" in result["designation"].lower()
+        )
 
     def test_search_by_multiple_keywords(self, mcp_test_env, db_with_seed):
         """Test finding product by multiple keywords."""
@@ -72,8 +75,12 @@ class TestGetStockLevel:
         result = get_stock_level(reference="COIL-304-2MM")
 
         required_fields = [
-            "found", "reference", "designation", "stock_disponible",
-            "stock_reserve", "stock_net"
+            "found",
+            "reference",
+            "designation",
+            "stock_disponible",
+            "stock_reserve",
+            "stock_net",
         ]
         for field in required_fields:
             assert field in result
@@ -94,7 +101,7 @@ class TestGetStockLevel:
             poids_kg_ml=2.5,
             stock_disponible=50,
             stock_reserve=0,
-            delai_fabrication_jours=3
+            delai_fabrication_jours=3,
         )
         db_with_seed.add(produit)
         db_with_seed.commit()
@@ -119,7 +126,7 @@ class TestGetStockLevel:
             poids_kg_ml=2.5,
             stock_disponible=10,
             stock_reserve=20,  # Reserve > Available
-            delai_fabrication_jours=3
+            delai_fabrication_jours=3,
         )
         db_with_seed.add(produit)
         db_with_seed.commit()

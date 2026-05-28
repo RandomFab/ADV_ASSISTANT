@@ -3,8 +3,13 @@
 from datetime import datetime, timedelta
 from src.mcp.tools.reclamations import search_reclamations
 from src.database.models import (
-    Reclamation, Client, Commande, StatutReclamationEnum,
-    TypeReclamationEnum, PrioriteEnum, StatutCommandeEnum
+    Reclamation,
+    Client,
+    Commande,
+    StatutReclamationEnum,
+    TypeReclamationEnum,
+    PrioriteEnum,
+    StatutCommandeEnum,
 )
 
 
@@ -42,8 +47,13 @@ class TestSearchReclamations:
         if reclamations:
             rec = reclamations[0]
             required_fields = [
-                "numero_ticket", "type", "statut", "priorite",
-                "date_ouverture", "date_cloture", "commande_numero"
+                "numero_ticket",
+                "type",
+                "statut",
+                "priorite",
+                "date_ouverture",
+                "date_cloture",
+                "commande_numero",
             ]
             for field in required_fields:
                 assert field in rec
@@ -55,8 +65,7 @@ class TestSearchReclamations:
 
         # Find the reclamation we seeded
         rec = next(
-            (r for r in reclamations if r["numero_ticket"] == "REC-2024-0001"),
-            None
+            (r for r in reclamations if r["numero_ticket"] == "REC-2024-0001"), None
         )
         assert rec is not None
         assert rec["type"] == "defaut_soudure"
@@ -75,8 +84,14 @@ class TestSearchReclamations:
     def test_filter_by_status_closed(self, mcp_test_env, db_with_seed):
         """Test filtering reclamations by 'cloturee' status."""
         # Create a closed reclamation
-        client = db_with_seed.query(Client).filter_by(nom_entreprise="Acme Corp").first()
-        commande = db_with_seed.query(Commande).filter_by(numero_commande="CMD-2024-0001").first()
+        client = (
+            db_with_seed.query(Client).filter_by(nom_entreprise="Acme Corp").first()
+        )
+        commande = (
+            db_with_seed.query(Commande)
+            .filter_by(numero_commande="CMD-2024-0001")
+            .first()
+        )
 
         closed_rec = Reclamation(
             numero_ticket="REC-2024-0002",
@@ -87,7 +102,7 @@ class TestSearchReclamations:
             type=TypeReclamationEnum.retard_livraison,
             statut=StatutReclamationEnum.cloturee,
             description="Retard résolu",
-            priorite=PrioriteEnum.moyenne
+            priorite=PrioriteEnum.moyenne,
         )
         db_with_seed.add(closed_rec)
         db_with_seed.commit()
@@ -131,7 +146,7 @@ class TestSearchReclamations:
             conditions_paiement="30j",
             email="empty@test.com",
             telephone="+33600000000",
-            date_creation=datetime.utcnow()
+            date_creation=datetime.utcnow(),
         )
         db_with_seed.add(client_empty)
         db_with_seed.commit()
@@ -153,7 +168,7 @@ class TestSearchReclamations:
             conditions_paiement="60j",
             email="clean@test.com",
             telephone="+33700000000",
-            date_creation=datetime.utcnow()
+            date_creation=datetime.utcnow(),
         )
         db_with_seed.add(client)
         db_with_seed.flush()
@@ -164,7 +179,7 @@ class TestSearchReclamations:
             date_commande=datetime.utcnow(),
             date_livraison_prevue=datetime.utcnow() + timedelta(days=10),
             statut=StatutCommandeEnum.en_attente,
-            montant_total_eur=1000.0
+            montant_total_eur=1000.0,
         )
         db_with_seed.add(commande)
         db_with_seed.commit()
@@ -181,8 +196,12 @@ class TestSearchReclamations:
 
         # REC-2024-0001 is open
         rec = next(
-            (r for r in result["reclamations"] if r["numero_ticket"] == "REC-2024-0001"),
-            None
+            (
+                r
+                for r in result["reclamations"]
+                if r["numero_ticket"] == "REC-2024-0001"
+            ),
+            None,
         )
         if rec:
             assert rec["date_cloture"] is None

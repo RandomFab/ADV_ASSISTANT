@@ -37,8 +37,12 @@ def load_interactions(last_n: int = None, since_hours: int = None) -> list[dict]
     if since_hours:
         cutoff = datetime.utcnow() - timedelta(hours=since_hours)
         interactions = [
-            i for i in interactions
-            if datetime.fromisoformat(i.get("timestamp", "2000-01-01T00:00:00")).replace(tzinfo=None) >= cutoff
+            i
+            for i in interactions
+            if datetime.fromisoformat(
+                i.get("timestamp", "2000-01-01T00:00:00")
+            ).replace(tzinfo=None)
+            >= cutoff
         ]
 
     # Filtre sur les N dernières
@@ -55,13 +59,10 @@ def compute_metrics(interactions: list[dict]) -> dict:
     Retourne un dict avec toutes les métriques et un résumé des seuils dépassés.
     """
     if not interactions:
-        return {
-            "nb_interactions": 0,
-            "message": "Aucune interaction à analyser."
-        }
+        return {"nb_interactions": 0, "message": "Aucune interaction à analyser."}
 
     nb_total = len(interactions)
-    
+
     # ── Latence ──────────────────────────────────────────────────────────
     latences = [i["latency_ms"] for i in interactions if "latency_ms" in i]
     latence_moyenne = sum(latences) / len(latences) if latences else 0
@@ -76,15 +77,19 @@ def compute_metrics(interactions: list[dict]) -> dict:
     all_tools = []
     for i in interactions:
         all_tools.extend(i.get("tools_called", []))
-    
+
     nb_sans_outil = sum(1 for i in interactions if not i.get("tools_called"))
     taux_sans_outil = (nb_sans_outil / nb_total) * 100 if nb_total > 0 else 0
     tools_frequence = dict(Counter(all_tools).most_common())
 
     # ── Longueur des réponses ────────────────────────────────────────────
     longueurs = [i.get("answer_length", 0) for i in interactions]
-    nb_reponses_courtes = sum(1 for longueur in longueurs if longueur < 100)   # Probablement tronquée
-    nb_reponses_longues = sum(1 for longueur in longueurs if longueur > 5000)  # Verbosité excessive
+    nb_reponses_courtes = sum(
+        1 for longueur in longueurs if longueur < 100
+    )  # Probablement tronquée
+    nb_reponses_longues = sum(
+        1 for longueur in longueurs if longueur > 5000
+    )  # Verbosité excessive
 
     return {
         "nb_interactions": nb_total,
@@ -109,5 +114,5 @@ def compute_metrics(interactions: list[dict]) -> dict:
         "reponses": {
             "nb_trop_courtes": nb_reponses_courtes,
             "nb_trop_longues": nb_reponses_longues,
-        }
+        },
     }

@@ -14,10 +14,11 @@ class TestCreateAgent:
         monkeypatch.setenv("MISTRAL_API_KEY", "test-key")
         monkeypatch.setenv("MCP_URL", "http://127.0.0.1:8001")
 
-        with patch("src.agent.graph.ChatMistralAI") as mock_llm, \
-             patch("src.agent.graph.MultiServerMCPClient") as mock_mcp_client, \
-             patch("src.agent.graph.create_react_agent") as mock_create_agent:
-
+        with (
+            patch("src.agent.graph.ChatMistralAI") as mock_llm,
+            patch("src.agent.graph.MultiServerMCPClient") as mock_mcp_client,
+            patch("src.agent.graph.create_react_agent") as mock_create_agent,
+        ):
             mock_llm_instance = MagicMock()
             mock_llm.return_value = mock_llm_instance
 
@@ -30,6 +31,7 @@ class TestCreateAgent:
             mock_create_agent.return_value = mock_agent
 
             from src.agent.graph import create_agent
+
             agent = await create_agent()
 
             # Verify agent was returned
@@ -41,10 +43,11 @@ class TestCreateAgent:
         monkeypatch.setenv("MISTRAL_API_KEY", "test-key")
         monkeypatch.setenv("MCP_URL", "http://127.0.0.1:8001")
 
-        with patch("src.agent.graph.ChatMistralAI") as mock_llm, \
-             patch("src.agent.graph.MultiServerMCPClient") as mock_mcp, \
-             patch("src.agent.graph.create_react_agent"):
-
+        with (
+            patch("src.agent.graph.ChatMistralAI") as mock_llm,
+            patch("src.agent.graph.MultiServerMCPClient") as mock_mcp,
+            patch("src.agent.graph.create_react_agent"),
+        ):
             mock_llm_instance = MagicMock()
             mock_llm.return_value = mock_llm_instance
 
@@ -53,6 +56,7 @@ class TestCreateAgent:
             mock_mcp.return_value = mock_mcp_instance
 
             from src.agent.graph import create_agent
+
             await create_agent()
 
             # Verify ChatMistralAI was instantiated
@@ -67,10 +71,11 @@ class TestCreateAgent:
         monkeypatch.setenv("MISTRAL_API_KEY", "test-key")
         monkeypatch.setenv("MCP_URL", "http://custom.mcp:9000")
 
-        with patch("src.agent.graph.ChatMistralAI") as mock_llm, \
-             patch("src.agent.graph.MultiServerMCPClient") as mock_mcp, \
-             patch("src.agent.graph.create_react_agent"):
-
+        with (
+            patch("src.agent.graph.ChatMistralAI") as mock_llm,
+            patch("src.agent.graph.MultiServerMCPClient") as mock_mcp,
+            patch("src.agent.graph.create_react_agent"),
+        ):
             mock_llm.return_value = MagicMock()
 
             mock_mcp_instance = AsyncMock()
@@ -78,6 +83,7 @@ class TestCreateAgent:
             mock_mcp.return_value = mock_mcp_instance
 
             from src.agent.graph import create_agent
+
             await create_agent()
 
             # Verify MCP client was created with correct config
@@ -92,10 +98,11 @@ class TestCreateAgent:
         monkeypatch.setenv("MISTRAL_API_KEY", "test-key")
         monkeypatch.setenv("MCP_URL", "http://127.0.0.1:8001")
 
-        with patch("src.agent.graph.ChatMistralAI") as mock_llm, \
-             patch("src.agent.graph.MultiServerMCPClient") as mock_mcp, \
-             patch("src.agent.graph.create_react_agent") as mock_create_agent:
-
+        with (
+            patch("src.agent.graph.ChatMistralAI") as mock_llm,
+            patch("src.agent.graph.MultiServerMCPClient") as mock_mcp,
+            patch("src.agent.graph.create_react_agent") as mock_create_agent,
+        ):
             mock_llm.return_value = MagicMock()
 
             mock_tools = ["get_client_info", "get_order_status"]
@@ -104,6 +111,7 @@ class TestCreateAgent:
             mock_mcp.return_value = mock_mcp_instance
 
             from src.agent.graph import create_agent
+
             await create_agent()
 
             # Verify get_tools was called
@@ -133,17 +141,19 @@ class TestCreateAgent:
         monkeypatch.setenv("MISTRAL_API_KEY", "test-key")
         monkeypatch.setenv("MCP_URL", "http://127.0.0.1:8001")
 
-        with patch("src.agent.graph.ChatMistralAI") as mock_llm, \
-             patch("src.agent.graph.MultiServerMCPClient") as mock_mcp, \
-             patch("src.agent.graph.create_react_agent") as mock_create_agent, \
-             patch("src.agent.graph.SYSTEM_PROMPT", "Test prompt"):
-
+        with (
+            patch("src.agent.graph.ChatMistralAI") as mock_llm,
+            patch("src.agent.graph.MultiServerMCPClient") as mock_mcp,
+            patch("src.agent.graph.create_react_agent") as mock_create_agent,
+            patch("src.agent.graph.SYSTEM_PROMPT", "Test prompt"),
+        ):
             mock_llm.return_value = MagicMock()
             mock_mcp_instance = AsyncMock()
             mock_mcp_instance.get_tools = AsyncMock(return_value=[])
             mock_mcp.return_value = mock_mcp_instance
 
             from src.agent.graph import create_agent
+
             await create_agent()
 
             # Verify create_react_agent received system prompt

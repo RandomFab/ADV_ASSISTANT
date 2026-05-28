@@ -11,6 +11,7 @@ from starlette.requests import Request
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("steelbot")
 
+
 class LoggingMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         # Avant la requête

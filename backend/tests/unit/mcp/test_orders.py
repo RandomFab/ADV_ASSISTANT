@@ -91,9 +91,15 @@ class TestGetOrderStatus:
         result = get_order_status("CMD-2024-0001")
 
         required_fields = [
-            "found", "numero_commande", "statut", "date_commande",
-            "date_livraison_prevue", "date_livraison_reelle",
-            "montant_total_eur", "client", "lignes"
+            "found",
+            "numero_commande",
+            "statut",
+            "date_commande",
+            "date_livraison_prevue",
+            "date_livraison_reelle",
+            "montant_total_eur",
+            "client",
+            "lignes",
         ]
         for field in required_fields:
             assert field in result
