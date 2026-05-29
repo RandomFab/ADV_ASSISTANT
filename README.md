@@ -39,8 +39,8 @@ Requires **Docker** and **Docker Compose**. A Mistral API key is required for th
 
 ```bash
 # Clone
-git clone https://github.com/RandomFab/ADV_ASSISTANT.git
-cd ADV_ASSISTANT
+git clone https://github.com/RandomFab/steelbot-mcp-sales-agent.git
+cd steelbot
 
 # Configure
 cp .env.example .env
