@@ -34,6 +34,7 @@ async def create_agent():
 
     # 3. Récupération des outils MCP et conversion en outils LangChain
     tools = await mcp_client.get_tools()
+    print(f"✅ Outils MCP chargés ({len(tools)}) : {[t.name for t in tools]}")
 
     # 4. Création de l'agent avec le pattern ReAct
     agent = create_react_agent(model=llm, tools=tools, prompt=SYSTEM_PROMPT)

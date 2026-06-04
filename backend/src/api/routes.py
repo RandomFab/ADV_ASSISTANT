@@ -46,9 +46,17 @@ async def chat(request: ChatRequest):
         "Pas de réponse",
     )
 
-    # Extraction des outils appelés (messages ToolMessage uniquement)
+    # DEBUG temporaire — à supprimer après diagnostic
+    for m in messages:
+        logger.warning(f"MSG type={type(m).__name__} | tool_calls={getattr(m, 'tool_calls', 'N/A')} | name={getattr(m, 'name', 'N/A')}")
+
+    # Extraction des outils appelés depuis les AIMessage.tool_calls (source fiable)
     tools_called = [
-        m.name for m in messages if isinstance(m, ToolMessage) and m.name is not None
+        tc["name"]
+        for m in messages
+        if isinstance(m, AIMessage)
+        for tc in (m.tool_calls or [])
+        if tc.get("name")
     ]
 
     latency_ms = round((time.time() - start_time) * 1000)

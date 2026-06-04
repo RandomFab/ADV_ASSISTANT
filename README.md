@@ -198,3 +198,59 @@ GitHub Actions workflow [`.github/workflows/cicd.yaml`](.github/workflows/cicd.y
 ## Author
 
 **RandomFab** — Fabien BARDOUIL
+
+# Example for demonstration
+
+**question 1** — *Chaînage complet (5 outils)*:
+```
+"Je dois gérer une réclamation client urgente. Donne-moi : les infos de contact du client Durand Construction, 
+le statut de sa commande CMD-2024-0847, les délais de livraison estimés, les stocks actuels des produits 
+commandés (inox 304), et toutes ses réclamations en cours."
+```
+Appels MCP : `get_client_info` → `get_order_status` → `get_delivery_estimate` → `get_stock_level` → `search_reclamations`
+Tables : Client, Commande, LigneCommande, Produit, Reclamation
+
+---
+
+**question 2** — *Rapport client 360° (4 outils)*:
+```
+"Prépare un dossier complet sur la société Acme Industries : ses coordonnées, toutes ses commandes ouvertes 
+avec leur statut, les délais de livraison associés, et les produits actuellement en rupture de stock 
+pour les références qu'elle commande habituellement."
+```
+Appels MCP : `get_client_info` → `get_order_status` → `get_delivery_estimate` → `get_stock_level`
+Tables : Client, Commande, LigneCommande, Produit
+
+---
+
+**question 3** — *Diagnostic qualité + livraison (3 outils)*:
+```
+"Avant de contacter le client Lafarge Matériaux, il faut que je voie : ses réclamations ouvertes, 
+ses commandes en attente de livraison, et le niveau de stock disponible pour les produits qu'on lui reproche 
+d'avoir reçus défectueux."
+```
+Appels MCP : `search_reclamations` → `get_order_status` → `get_stock_level`
+Tables : Reclamation, Commande, LigneCommande, Produit
+
+---
+
+**question 4** — *Requête multi-tables complexe (3 tables principales, 4 outils)*:
+```
+"Fais-moi une analyse : quels clients ont des commandes en cours avec des délais dépassés, 
+lesquels ont en même temps des produits en rupture de stock ET des réclamations non résolues ? 
+Focus sur le client et ses détails de contact."
+```
+Appels MCP : `get_client_info` + `get_order_status` + `get_delivery_estimate` + `search_reclamations` (+ implicite `get_stock_level`)
+Tables (multi-table join) : Client (core) × Commande × Reclamation × Produit
+
+---
+
+## Recommandations d'usage
+
+Ces questions sont progressives :
+- **Q1** démontre la **capacité d'agent autonome** : 5 appels d'outils réussis en séquence.
+- **Q2** montre la **robustesse sur chaînages** : gestion de plusieurs résultats multiples.
+- **Q3** illustre un **cas métier réaliste** : diagnostic avec contexte.
+- **Q4** teste la **complexité maximale** : agrégation multi-sources et corrélation de conditions.
+
+Latence estimée : Q1/Q2 ~ 12-15s, Q3 ~ 8-10s, Q4 ~ 15-20s.

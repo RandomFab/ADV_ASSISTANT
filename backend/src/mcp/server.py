@@ -11,6 +11,11 @@ FastMCP basculera sur SSE/HTTP.
 """
 
 from src.mcp.mcp_instance import mcp
+import src.mcp.tools.orders  # noqa: F401
+import src.mcp.tools.clients  # noqa: F401
+import src.mcp.tools.stock  # noqa: F401
+import src.mcp.tools.delivery  # noqa: F401
+import src.mcp.tools.reclamations  # noqa: F401
 
 
 if __name__ == "__main__":
